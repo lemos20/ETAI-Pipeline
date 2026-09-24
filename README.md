@@ -2,39 +2,39 @@
 
 # 20260647 Miguel Lemos
 
-# Comparing LR and DT
+## Comparing LR and DT
 
 DT got a clear advantage in training data but its worse in the test data because of overfitting, LR is better has it as better accuracy in the test data even with a lower training accuracy
 
-# DT 
+### DT 
 
 Train accuracy: 0.829
 Test accuracy:  0.631
 
-# LR
+### LR
 
 Train accuracy: 0.678
 Test accuracy:  0.679
 
 ## Results after Data cleanup
 
-# DT
+### DT
 
 Train accuracy: 0.792
 Test accuracy:  0.613
 
-# LR
+### LR
 
 Train accuracy: 0.676
 Test accuracy:  0.657
 
-# Comparison with last week's results
+## Comparison with last week's results
 
 After the Data cleanup we can observe a drop in the accuracy of each model in traning and in testing.
 
 At this time **LR** is still the best model for this purpose.
 
-## Project Info
+# Project Info
 
 This is the **starting point** for your semester project: a small but *complete* predictive pipeline -- every piece a real project needs (entry point, config, data loading, preprocessing, model, evaluation), just kept as simple as possible for now.
 
