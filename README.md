@@ -16,7 +16,7 @@ Test accuracy:  0.631
 Train accuracy: 0.678
 Test accuracy:  0.679
 
-## Results after Data cleanup
+## Results after Data cleanup and Preprocessing
 
 ### DT
 
@@ -28,11 +28,44 @@ Test accuracy:  0.613
 Train accuracy: 0.676
 Test accuracy:  0.657
 
-## Comparison with last week's results
+## Comparison with week2's results
 
 After the Data cleanup we can observe a drop in the accuracy of each model in traning and in testing.
 
 At this time **LR** is still the best model for this purpose.
+
+## Week 4 - Results after Cross Validation
+
+### LR
+
+Train accuracy: 0.677 
+Validation accuracy: 0.675
+
+### DT 
+
+Train accuracy: 0.701 
+Validation accuracy: 0.600
+
+### RF
+
+Train accuracy: 0.731
+Validation accuracy: 0.647
+
+## Week 5 - Hyperparameters tuning and nested Cross Validation
+
+| Model | Default: CV mean ± std | Tuned: nested CV mean ± std | Tuning score (best trial) | Optimism | Chosen hyperparameters |
+|---|---|---|---|---|---|
+| Decision tree | 0.590 ±0.020 | 0.670 ±0.015 | 0.679 | +0.005 | {'model__max_depth': 9, 'model__min_samples_leaf': 95, 'model__criterion': 'gini'} |
+| Logistic regression | 0.600 ±0.028 | 0.667 ±0.014 | 0.678 | +0.009 | {'max_depth': 19, 'min_samples_leaf': 72, 'criterion': 'gini'} |
+| Random forest | 0.644 ±0.017 | 0.680 ±0.014 | 0.685 | +0.003 | {'model__n_estimators': 91, 'model__max_depth': 15, 'model__min_samples_leaf': 59, 'model__max_features': 0.5} |
+
+#### Conclusion for week 5
+
+Tuning has a positive impact in all models but the one who benefited the most was the decision tree model in which the gai. was bigger than the fold-to-fold std.
+
+The best model is now Random Forests oposed to Logistic Regression which was better before.
+
+The number I would report is the nested CV mean obtained as it reports the average precision, rather than the best score which can represent an outlier.
 
 # Project Info
 
