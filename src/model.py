@@ -6,6 +6,9 @@ from sklearn.ensemble import AdaBoostClassifier, BaggingClassifier, RandomForest
 from sklearn.dummy import DummyClassifier
 from sklearn.pipeline import Pipeline
 from .preprocessing import build_preprocessor
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.naive_bayes import GaussianNB
 
 
 def oblique_random_forest(n_estimators: int = 100, n_components: int = 10, density="auto",
@@ -39,6 +42,9 @@ _MODELS = {
     "random_forest": RandomForestClassifier,
     "oblique_random_forest": oblique_random_forest,
     "adaboost": adaboost,
+    "gradient_boosting": GradientBoostingClassifier,
+    "hist_gradient_boosting": HistGradientBoostingClassifier,
+    "naive_bayes": GaussianNB,
 }
 
 def build_model(model_config: dict):
