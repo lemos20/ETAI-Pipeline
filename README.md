@@ -77,10 +77,32 @@ The number I would report is the nested CV mean obtained as it reports the avera
 | Oblique random forest | 0.642 ±0.013 | 0.683 ±0.015 | 0.697 | {'model__estimator__tree__max_depth': 3, 'model__estimator__tree__min_samples_leaf': 3, 'model__estimator__project__n_components': 9} |
 | AdaBoost | 0.668 ±0.013 | 0.683 ±0.015 | 0.698 | {'model__estimator__max_depth': 5, 'model__n_estimators': 236, 'model__learning_rate': 0.02335065047830805} |
 
-#### Conclusion
+#### Conclusion for week 6
 
 All of the models have a really close tuned validation score but for this porpose i would probably choose Olblique random forest as it's mean is the best and it would have the computational cost that adaboost has.
 
 I think they match the trees used in each model and to justify we can look at the chose hyperparameters for the oblique random forest where the  chosen ones where the max_depth, min_samples_leaf and n_components in a model which is deep and the hyperparameters chosen for adaboost, which uses shallow trees and chose estimator_max_depth, n_estimators and learning_rate.
 
 I would report the neted CV mean for the obique random forest as it seems to be a fast algorithm as well as a good algorithm, with a high precision and a fast training and validating running time.
+
+## Week 7 - New Boosting Methods and New Metrics
+
+| Model | Tuned | Floor | Selection Metric (ROC AUC) |
+|---|---|---|---|
+| Gradient Boosting | True | 0.5 | 0.7279 ± 0.0147 |
+| Gradient Boosting | False | 0.5 | 0.7275 ± 0.0159 |
+| Random Forest | True | 0.5 | 0.7273 ± 0.0127 |
+| Oblique Random Forest | True | 0.5 | 0.7273 ± 0.0141 |
+| AdaBoost | True | 0.5 | 0.7262 ± 0.0155 |
+| Logistic Regression | False | 0.5 | 0.7188 ± 0.0137 |
+| Logistic Regression | True | 0.5 | 0.7184 ± 0.0134 |
+| AdaBoost | False | 0.5 | 0.7180 ± 0.0153 |
+| Decision Tree | True | 0.5 | 0.7179 ± 0.0185 |
+| Hist Gradient Boosting | False | 0.5 | 0.7150 ± 0.0212 |
+| Naive Bayes | False | 0.5 | 0.6891 ± 0.0106 |
+| Random Forest | False | 0.5 | 0.6863 ± 0.0145 |
+| Oblique Random Forest | False | 0.5 | 0.6779 ± 0.0185 |
+| Decision Tree | False | 0.5 | 0.6078 ± 0.0251 |
+| Dummy | False | 0.5 | 0.5000 ± 0.0000 |
+
+I chose ROC AUC as the selection metric because it's robust to unbalanced classes and it's different scoring methodology compared to, for example accuracy, it doesn't depend on thresholds.

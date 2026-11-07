@@ -17,7 +17,8 @@ cv:
   n_splits: 5
   shuffle: true
   random_state: 42
-  scoring: "accuracy"
+  metrics: ["accuracy", "balanced_accuracy", "precision", "recall", "f1", "fbeta_2", "roc_auc", "average_precision"]
+  selection_metric: "roc_auc"
   n_jobs: 1  
 
 diagnostics:
@@ -66,7 +67,7 @@ preprocessing:
     categorical_strategy: "most_frequent"   # applies to sex, age_cat, c_charge_degree
 
 model:
-  type: "gradient_boosting"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes"
+  type: "naive_bayes"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes"
   params: {}
     #max_iter: 2000
 
@@ -108,3 +109,4 @@ tuning:
 
 output:
   results_dir: "results"   # each run's full report is saved here as a timestamped .txt file
+  scoreboard: "results/runs.csv"
