@@ -10,11 +10,14 @@ import optuna
 import yaml
 from sklearn.model_selection import StratifiedKFold
 from datetime import datetime
+import tempfile
+import shutil
+import pandas as pd
 
 from src.data import load_data
 from src.preprocessing import clean_dataset, drop_duplicate_rows, split_features_target, split_dev_test
 from src.model import build_pipeline
-from src.evaluate import cross_validate_pipeline, cv_report, oof_classification_report, fairness_report, build_scorers
+from src.evaluate import cross_validate_pipeline, cv_report, oof_classification_report, fairness_report, build_scorers, corrected_paired_test
 from src.tuning import tune_pipeline, nested_cross_validate, tuning_report
 from src.results import save_run, save_scores
 
@@ -50,11 +53,17 @@ def main():
     selection_metric = cv_config["selection_metric"]
     scorers = build_scorers(metrics)
     n_jobs = cv_config.get("n_jobs", 1)
-    print(f"Model: {model_type}   |   selection metric: {selection_metric}   |   "
-          f"{cv_config['n_splits']}-fold CV")
+    selection_config = config.get("feature_selection") or {}
+    selection_enabled = selection_config.get("enabled", False)
+    print(f"Model: {model_type}   |   selection metric: {selection_metric}   |   "f"{cv_config['n_splits']}-fold CV")
     print(f"Data:  {len(X_dev)} development rows   |   {len(X_test)} test rows locked away (not used)")
+    print(f"Feature selection: {'enabled' if selection_enabled else 'disabled'}   "
+          f"min_votes={selection_config.get('min_votes', 2)}   "
+          f"random_state={selection_config.get('random_state')}")
+    print("Features kept:", ", ".join(X_dev.columns))
 
-    pipeline = build_pipeline(config["preprocessing"], config["model"])
+    cache_dir = tempfile.mkdtemp(prefix="pipeline_cache_")
+    pipeline = build_pipeline(config["preprocessing"], config["model"], selection_config, memory=cache_dir)
     floor_pipeline = build_pipeline(config["preprocessing"], {"type": "dummy"})
     floor_scores, _ = cross_validate_pipeline(floor_pipeline, X_dev, y_dev, cv,
                                               {selection_metric: scorers[selection_metric]}, selection_metric, n_jobs)
@@ -127,8 +136,13 @@ def main():
     print(f"\nScoreboard (runs on the same data and metric; best first)\n{board}")
     report += f"\nScoreboard:\n{board}\n"
 
+    shutil.rmtree(cache_dir, ignore_errors=True)
     path = save_run(config.get("output", {}).get("results_dir", "results"), run, config, report)
     print(f"\n{refit}\nFull report (per-fold tables, tuning, confusion matrix, fairness): {path}")
+
+    runs = pd.read_csv("results/runs.csv")
+    folds = [c for c in runs.columns if c.startswith("fold_")]
+    print(corrected_paired_test(runs.loc[0, folds], runs.loc[1, folds], test_train_ratio=1 / 4))
 
 
 if __name__ == "__main__":

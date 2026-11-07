@@ -105,4 +105,23 @@ I would report the neted CV mean for the obique random forest as it seems to be 
 | Decision Tree | False | 0.5 | 0.6078 ± 0.0251 |
 | Dummy | False | 0.5 | 0.5000 ± 0.0000 |
 
+### Conclusion for week 8
+
 I chose ROC AUC as the selection metric because it's robust to unbalanced classes and it's different scoring methodology compared to, for example accuracy, it doesn't depend on thresholds.
+
+## Week 8 - Feature Selection
+
+| Model | Tuned | Floor | Selection Metric (ROC AUC) | Feature Selection
+|---|---|---|---|---|
+| XGBoost | False | 0.5 | 0.7041 ± 0.0180 | False
+| XGBoost | False | 0.5 | 0.7034 ± 0.0207 | True
+
+### Conclusions for week 8
+
+Feature Selection didn't create a big difference in the ROC AUC score yet this could be because of the parameters chosen, yet this has shown that Feature Selection didn't add much to the scoren xgboost could already achieve.
+
+All of the features where kept with the parameters given to the Feature Selection model. The features kept where: {juv_other_count, priors_count, juv_misd_count, sex, age_cat, c_charge_degree, juv_fel_count, age, priors_count_was_missing, c_charge_degree_was_missing}
+
+Even the corrected pair test dindn't get affected that much.
+
+I would probably not keep selection on as it's consuming computational resources while not doing much for the model.

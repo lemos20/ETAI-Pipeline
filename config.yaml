@@ -67,7 +67,7 @@ preprocessing:
     categorical_strategy: "most_frequent"   # applies to sex, age_cat, c_charge_degree
 
 model:
-  type: "naive_bayes"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes"
+  type: "xgboost"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes" or "xgboost"
   params: {}
     #max_iter: 2000
 
@@ -106,7 +106,18 @@ tuning:
       model__learning_rate: {type: float, low: 0.01, high: 1.0, log: true}
     naive_bayes:
       model__var_smoothing: {type: float, low: 1e-12, high: 1e-6, log: true}
+    xgboost:
+      model__max_depth: {type: int, low: 1, high: 8}
+      model__n_estimators: {type: int, low: 25, high: 400, log: true}
+      model__learning_rate: {type: float, low: 0.01, high: 1.0, log: true}
 
 output:
   results_dir: "results"   # each run's full report is saved here as a timestamped .txt file
   scoreboard: "results/runs.csv"
+
+feature_selection:
+  enabled: true
+  min_votes: 2
+  random_state: 42
+  search_space:
+    select_min_votes: {type: int, low: 1, high: 3}
