@@ -125,3 +125,9 @@ All of the features where kept with the parameters given to the Feature Selectio
 Even the corrected pair test dindn't get affected that much.
 
 I would probably not keep selection on as it's consuming computational resources while not doing much for the model.
+
+## Week 9 - New Data
+
+I chose Option A for this week's challenge
+
+## Beyond COMPAS - New Data
