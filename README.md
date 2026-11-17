@@ -145,3 +145,25 @@ Fix: The feature selected for sensitive attribute cannot be in the listed featur
 #### Problem 3
 Description: score_text key error
 Fix: Changes in the fairness report
+
+### Runs
+
+| Run | Model | Tuned | Encoder | Scaler | Tuned Params | Mean ROC AUC | Std | Untuned | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 |
+| :--- | :--- | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| `20261117_113653` | `xgboost` | True | target | standard | `{'model__max_depth': 2, 'model__n_estimators': 293, 'model__learning_rate': 0.1062}` | **0.9108** | 0.0146 | 0.8994 | 0.9082 | 0.9106 | 0.9342 | 0.8938 | 0.9074 |
+| `20261117_120820` | `xgboost` | True | target | standard | `{'model__max_depth': 2, 'model__n_estimators': 258, 'model__learning_rate': 0.1075}` | **0.9108** | 0.0152 | 0.9004 | 0.9125 | 0.9090 | 0.9347 | 0.8935 | 0.9043 |
+| `20261117_113228` | `xgboost` | True | target | standard | `{'model__max_depth': 2, 'model__n_estimators': 104, 'model__learning_rate': 0.2722}` | **0.9103** | 0.0145 | 0.8968 | 0.9087 | 0.9138 | 0.9325 | 0.8937 | 0.9029 |
+| `20261117_122405` | `xgboost` | True | target | standard | `{'model__max_depth': 4, 'model__n_estimators': 169, 'model__learning_rate': 0.0637}` | **0.9100** | 0.0167 | 0.9002 | 0.9099 | 0.9112 | 0.9338 | 0.8866 | 0.9085 |
+| `20261117_120436` | `xgboost` | True | target | standard | `{'model__max_depth': 2, 'model__n_estimators': 137, 'model__learning_rate': 0.2411}` | **0.9092** | 0.0165 | 0.9010 | 0.9055 | 0.9078 | 0.9353 | 0.8894 | 0.9080 |
+| `20261117_122255` | `xgboost` | False | target | standard | — | **0.9017** | 0.0142 | 0.9017 | 0.8935 | 0.9024 | 0.9255 | 0.8892 | 0.8978 |
+| `20261117_095137` | `logistic_regression` | True | target | standard | `{'model__C': 15.7419}` | **0.8960** | 0.0147 | 0.8958 | 0.8930 | 0.8965 | 0.9185 | 0.8775 | 0.8946 |
+| `20261117_094526` | `logistic_regression` | False | target | standard | — | **0.8959** | 0.0146 | 0.8959 | 0.8931 | 0.8964 | 0.9183 | 0.8773 | 0.8946 |
+| `20261117_094924` | `logistic_regression` | False | target | standard | — | **0.8950** | 0.0148 | 0.8950 | 0.8928 | 0.8921 | 0.9184 | 0.8773 | 0.8947 |
+| `20261117_095015` | `logistic_regression` | False | target | standard | — | **0.8950** | 0.0147 | 0.8950 | 0.8928 | 0.8921 | 0.9180 | 0.8772 | 0.8947 |
+
+The features kept were `age, workclass, education_num, marital_status, occupation, relationship, sex, capital_gain, capital_loss, hours_per_week, native_country, v01, v02, v03, v04, v05, v06, v07,v08, v09, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, capital_gain_was_missing`
+
+The hardest part of this delivery was adding the testing with the new csv. 
+Overall adapting the pipeline to new data was reletively simple and required minimal changes.
+
+I was having some dificulty achieving the scores but then i changed the model to xgboost instead of the linear regression i was using to be faster, and I instantly got the target scores I had been chasing.

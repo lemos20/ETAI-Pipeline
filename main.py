@@ -7,6 +7,7 @@ load config -> load and clean data -> drop duplicate rows (training only) -> fea
 -> out-of-fold classification and fairness reports -> refit on all development rows -> save the report
 """
 import optuna
+from sklearn.metrics import roc_auc_score
 import yaml
 from sklearn.model_selection import StratifiedKFold
 from datetime import datetime
@@ -14,6 +15,7 @@ import tempfile
 import shutil
 import pandas as pd
 import sys
+import os
 
 from src.data import load_data
 from src.preprocessing import clean_dataset, drop_duplicate_rows, split_features_target, split_dev_test
@@ -123,6 +125,48 @@ def main():
     refit = f"Final model: {model_type} refit on all {len(X_dev)} development rows."
     report += "\n" + refit + "\n"
 
+    ext_test_cfg = config.get("testing") or {}
+    if ext_test_cfg.get("enabled", False):
+        ext_path = ext_test_cfg["path"]
+        df_ext_raw = load_data(ext_path)
+        df_ext_clean = clean_dataset(df_ext_raw, config["diagnostics"])
+        target_col = config["data"]["target"]
+
+        if target_col in df_ext_clean.columns:
+            X_ext, y_ext, extras_ext = split_features_target(df_ext_clean, config["data"], mnar_sources)
+            ext_proba = pipeline.predict_proba(X_ext)[:, 1]
+            ext_auc = roc_auc_score(y_ext, ext_proba)
+            print(f"\nExternal test ({ext_path}) | ROC AUC: {ext_auc:.3f}")
+            ext_report = (
+                f"\nExternal test ({ext_path}) | ROC AUC: {ext_auc:.3f}\n"
+                + oof_classification_report(y_ext, ext_proba)
+                + "\n"
+                + fairness_report(y_ext, ext_proba, extras_ext, sensitive_attr=config["data"]["sensitive_attr"])
+            )
+            print(ext_report)
+            report += ext_report
+        else:
+            drop_cols = [c for c in config["data"].get("drop_columns", []) if c in df_ext_clean.columns]
+            sens = config["data"].get("sensitive_attr")
+            if sens and sens in df_ext_clean.columns:
+                drop_cols.append(sens)
+            X_ext = df_ext_clean.drop(columns=drop_cols)
+            for src in mnar_sources:
+                if src in X_ext.columns and f"{src}_missing" in X_dev.columns:
+                    X_ext[f"{src}_missing"] = X_ext[src].isna().astype(int)
+            X_ext = X_ext.reindex(columns=X_dev.columns, fill_value=0)
+            ext_proba = pipeline.predict_proba(X_ext)[:, 1]
+            out_path = ext_test_cfg.get("predictions_output", f"results/test_predictions_{run}.csv")
+            os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+            pd.DataFrame({
+                "id": df_ext_raw[config["diagnostics"]["id_column"]],
+                "proba": ext_proba,
+                "pred": (ext_proba >= 0.5).astype(int),
+            }).to_csv(out_path, index=False)
+            msg = f"\nExternal test ({ext_path}): predictions saved to {out_path}\n"
+            print(msg)
+            report += msg
+
     row = {"run": run, "data": config["data"]["path"], "model": model_type, "tuned": tuning_enabled,
            "encoder": config["preprocessing"]["encoder"], "scaler": config["preprocessing"]["scaler"],
            "params": str(config["model"].get("params")), "tuned_params": str(study.best_params) if tuning_enabled else "",
@@ -142,7 +186,7 @@ def main():
     path = save_run(config.get("output", {}).get("results_dir", "results"), run, config, report)
     print(f"\n{refit}\nFull report (per-fold tables, tuning, confusion matrix, fairness): {path}")
 
-    runs = pd.read_csv("results/runs.csv")
+    runs = pd.read_csv(config["output"].get("scoreboard"))
     folds = [c for c in runs.columns if c.startswith("fold_")]
     print(corrected_paired_test(runs.loc[0, folds], runs.loc[1, folds], test_train_ratio=1 / 4))
 

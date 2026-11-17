@@ -2,7 +2,7 @@ data:
   path: "data/adult_train.csv"
   target: "income_over_50k"
   sensitive_attr: "race" # Choose between "race" or "sex"
-  drop_columns: ["id","education","income_over_50k"]
+  drop_columns: ["id","education","fnlwgt","income_over_50k"]
 
 test_set:
   size: 0.2
@@ -18,8 +18,8 @@ cv:
 
 diagnostics:
   id_column: "id"
-  candidate_predictors: ["sex", "race", "age_cat", "c_charge_degree", "score_text"]
-  numeric_text_columns: ["priors_count", "prior_offenses"]
+  candidate_predictors: ["sex", "race"]
+  numeric_text_columns: ["v01", "v02", "v03", "v04", "v05", "v06", "v07", "v08", "v09", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18"]
   placeholder_tokens: ["?"]
   validity_rules:
     age: {min: 18, max: 90}
@@ -53,12 +53,12 @@ preprocessing:
     categorical_strategy: "most_frequent"   # applies to sex, race, workclass, marital_status, occupation, relationship, native_country, v19-v25
 
 model:
-  type: "logistic_regression"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes" or "xgboost"
+  type: "xgboost"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes" or "xgboost"
   params: {}
     #max_iter: 2000
 
 tuning:
-  enabled: false
+  enabled: true
   n_trials: 50
   n_splits: 3
   n_jobs: 1
@@ -107,3 +107,8 @@ feature_selection:
   random_state: 42
   search_space:
     select_min_votes: {type: int, low: 1, high: 3}
+
+testing:
+  enabled: true
+  path: "data/adult_new.csv"
+  predictions_output: "results/adult_pred/test_predictions.csv"
