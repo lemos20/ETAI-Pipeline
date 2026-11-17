@@ -131,3 +131,17 @@ I would probably not keep selection on as it's consuming computational resources
 I chose Option A for this week's challenge
 
 ## Beyond COMPAS - New Data
+
+### Issues encountered
+
+#### Problem 1
+Description: At first main wasn't using the right config
+Fix: Added sys.argv to catch the argument from the terminal
+
+#### Problem 2
+Description: Column names not on the dataframe, namely race or sex when they're selected int he sensitive attributes
+Fix: The feature selected for sensitive attribute cannot be in the listed features
+
+#### Problem 3
+Description: score_text key error
+Fix: Changes in the fairness report

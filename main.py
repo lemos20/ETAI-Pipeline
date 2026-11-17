@@ -13,6 +13,7 @@ from datetime import datetime
 import tempfile
 import shutil
 import pandas as pd
+import sys
 
 from src.data import load_data
 from src.preprocessing import clean_dataset, drop_duplicate_rows, split_features_target, split_dev_test
@@ -28,7 +29,8 @@ def load_config(path: str = "config.yaml") -> dict:
 
 
 def main():
-    config = load_config()
+    config_file = sys.argv[1] if len(sys.argv) > 1 else "config.yaml"
+    config = load_config(config_file)
     run = datetime.now().strftime("%Y%m%d_%H%M%S")
     model_type = config["model"]["type"]
 
@@ -70,10 +72,10 @@ def main():
     fold_scores, oof_proba = cross_validate_pipeline(pipeline, X_dev, y_dev, cv, scorers, selection_metric, n_jobs)
     floor, untuned = floor_scores["validation"].mean(), fold_scores["validation"].mean()
 
-    print("\nDefault hyperparameters (config.yaml)")
+    print("\nDefault hyperparameters")
     print(f"  {selection_metric}: {untuned:.3f} ± {fold_scores['validation'].std(ddof=1):.3f}   "
           f"train-validation gap: {fold_scores['gap'].mean():+.3f}   no-model floor: {floor:.3f}")
-    report = (f"Hyperparameters from config.yaml: {config['model'].get('params')}\n\n"
+    report = (f"Hyperparameters: {config['model'].get('params')}\n\n"
               + cv_report(fold_scores, metrics, selection_metric, "Cross-validation")
               + f"\n\nNo-model floor (dummy, same folds): {selection_metric} = {floor:.3f}")
     final_scores = fold_scores
@@ -83,7 +85,7 @@ def main():
     if tuning_enabled:
         search_spaces = tuning_config.get("search_spaces") or {}
         if model_type not in search_spaces:
-            raise ValueError(f"tuning is enabled but config.yaml has no tuning.search_spaces for "
+            raise ValueError(f"tuning is enabled but config has no tuning.search_spaces for "
                              f"'{model_type}'. Add one, or set tuning.enabled: false.")
         search_space = search_spaces[model_type]
         n_trials = tuning_config["n_trials"]
