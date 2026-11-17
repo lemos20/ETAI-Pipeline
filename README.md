@@ -163,6 +163,8 @@ Fix: Changes in the fairness report
 
 The features kept were `age, workclass, education_num, marital_status, occupation, relationship, sex, capital_gain, capital_loss, hours_per_week, native_country, v01, v02, v03, v04, v05, v06, v07,v08, v09, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24, v25, capital_gain_was_missing`
 
+## Conclusion for Week 9
+
 The hardest part of this delivery was adding the testing with the new csv. 
 Overall adapting the pipeline to new data was reletively simple and required minimal changes.
 
