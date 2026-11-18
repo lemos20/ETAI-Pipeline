@@ -63,8 +63,12 @@ preprocessing:
   categorical_features: ["sex", "age_cat", "c_charge_degree"]
   mnar_indicator_sources: ["priors_count", "c_charge_degree"]
   imputation:
-    numeric_strategy: "median"        # applies to age, juv_fel_count, juv_misd_count, juv_other_count, priors_count
+    # Numeric Options: median | mean | knn | iterative | random_forest
+    numeric_strategy: "random_forest"        # applies to age, juv_fel_count, juv_misd_count, juv_other_count, priors_count
     categorical_strategy: "most_frequent"   # applies to sex, age_cat, c_charge_degree
+    n_neighbors: 5
+    max_iter: 10
+    n_estimators: 50
 
 model:
   type: "xgboost"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes" or "xgboost"
@@ -114,6 +118,7 @@ tuning:
 output:
   results_dir: "results"   # each run's full report is saved here as a timestamped .txt file
   scoreboard: "results/runs.csv"
+  model_path: "models/model.joblib"
 
 feature_selection:
   enabled: true

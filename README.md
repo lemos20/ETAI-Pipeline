@@ -169,3 +169,13 @@ The hardest part of this delivery was adding the testing with the new csv.
 Overall adapting the pipeline to new data was reletively simple and required minimal changes.
 
 I was having some dificulty achieving the scores but then i changed the model to xgboost instead of the linear regression i was using to be faster, and I instantly got the target scores I had been chasing.
+
+## Week 10 - Missing Values and Deployment
+
+#### Missing Values
+
+
+
+#### Predicting new data
+
+The command for it is `python predict.py data/compas_new_people.csv predictions.csv` and it's output is a predictions.csv with the predictions of the model supplied to the function.

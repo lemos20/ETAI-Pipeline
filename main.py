@@ -16,6 +16,7 @@ import shutil
 import pandas as pd
 import sys
 import os
+import joblib
 
 from src.data import load_data
 from src.preprocessing import clean_dataset, drop_duplicate_rows, split_features_target, split_dev_test
@@ -171,12 +172,12 @@ def main():
            "encoder": config["preprocessing"]["encoder"], "scaler": config["preprocessing"]["scaler"],
            "params": str(config["model"].get("params")), "tuned_params": str(study.best_params) if tuning_enabled else "",
            "metric": selection_metric, "mean": final_scores["validation"].mean(),
-           "std": final_scores["validation"].std(ddof=1), "untuned": untuned, "floor": floor,
+           "std": final_scores["validation"].std(ddof=1), "untuned": untuned, "floor": floor, "imputation": config["preprocessing"]["imputation"]["numeric_strategy"],
            **{f"fold_{i}": score for i, score in enumerate(final_scores["validation"], start=1)}}
     runs = save_scores(config.get("output", {}).get("scoreboard", "results/runs.csv"), row)
     same = runs[(runs["data"] == row["data"]) & (runs["metric"] == selection_metric)]
     board = (same.sort_values("mean", ascending=False)
-             [["run", "model", "tuned", "encoder", "scaler", "mean", "std", "untuned", "floor"]]
+             [["run", "model", "tuned", "encoder", "scaler", "mean", "std", "untuned", "floor", "imputation"]]
              .rename(columns={"mean": selection_metric})
              .to_string(index=False, float_format=lambda v: f"{v:.3f}"))
     print(f"\nScoreboard (runs on the same data and metric; best first)\n{board}")
@@ -189,6 +190,12 @@ def main():
     runs = pd.read_csv(config["output"].get("scoreboard"))
     folds = [c for c in runs.columns if c.startswith("fold_")]
     print(corrected_paired_test(runs.loc[0, folds], runs.loc[1, folds], test_train_ratio=1 / 4))
+
+    # The final fitted pipeline: what predict.py loads to predict new data.
+    model_path = config.get("output", {}).get("model_path", "models/model.joblib")
+    os.makedirs(os.path.dirname(model_path) or ".", exist_ok=True)
+    pipeline.set_params(memory=None)                # the cache folder was deleted; the saved model doesn't need it
+    joblib.dump(pipeline, model_path)
 
 
 if __name__ == "__main__":
