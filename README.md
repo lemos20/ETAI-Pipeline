@@ -130,23 +130,23 @@ I would probably not keep selection on as it's consuming computational resources
 
 I chose Option A for this week's challenge
 
-## Beyond COMPAS - New Data
+### Beyond COMPAS - New Data
 
-### Issues encountered
+#### Issues encountered
 
-#### Problem 1
+##### Problem 1
 Description: At first main wasn't using the right config
 Fix: Added sys.argv to catch the argument from the terminal
 
-#### Problem 2
+##### Problem 2
 Description: Column names not on the dataframe, namely race or sex when they're selected int he sensitive attributes
 Fix: The feature selected for sensitive attribute cannot be in the listed features
 
-#### Problem 3
+##### Problem 3
 Description: score_text key error
 Fix: Changes in the fairness report
 
-### Runs
+#### Runs
 
 | Run | Model | Tuned | Encoder | Scaler | Tuned Params | Mean ROC AUC | Std | Untuned | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 |
 | :--- | :--- | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -174,7 +174,20 @@ I was having some dificulty achieving the scores but then i changed the model to
 
 #### Missing Values
 
+##### Imputer runs
 
+| Run | Model | Tuned | Encoder | Scaler | Tuned Params | Mean ROC AUC | Std | Untuned | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 | Imputer |
+| :--- | :--- | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `20261118_122628` | `xgboost` | False | target | standard | — | **0.7091** | 0.0167 | 0.7091 | 0.7110 | 0.6822 | 0.7186 | 0.7074 | 0.7262 | knn |
+| `20261119_123722` | `xgboost` | False | target | standard | — | **0.7065** | 0.0148 | 0.7065 | 0.7038 | 0.6850 | 0.7123 | 0.7054 | 0.7259 | median |
+| `20261118_124637` | `xgboost` | False | target | standard | — | **0.7060** | 0.0151 | 0.7060 | 0.7018 | 0.6840 | 0.7177 | 0.7037 | 0.7225 | iterative |
+| `20261119_123649` | `xgboost` | False | target | standard | — | **0.7057** | 0.0127 | 0.7057 | 0.7044 | 0.6881 | 0.7137 | 0.7010 | 0.7214 | mean |
+
+##### Which imputer should we keep?
+
+We should keep all of the imputers because in certain situations they might be better for us, but for this purpose we should keep knn as it showed the best ROC-AUC.
+
+I couldn't test random_forest as a imputer because I kept getting a the same `Early stopping criteria not reached` error all of the time.
 
 #### Predicting new data
 

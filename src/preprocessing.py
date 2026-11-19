@@ -21,6 +21,7 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.ensemble import RandomForestRegressor
 
+
 def flag_invalid_values(df: pd.DataFrame, rules: dict) -> pd.DataFrame:
     """
     Applies {column: {"min": ..., "max": ...}} domain rules (either bound optional) and sets

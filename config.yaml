@@ -73,7 +73,7 @@ preprocessing:
 model:
   type: "xgboost"   # "logistic_regression" or "decision_tree" or "random_forest" or "dummy" or "oblique_random_forest" or "adaboost" or "gradient_boosting" or "hist_gradient_boosting" or "naive_bayes" or "xgboost"
   params: {}
-    #max_iter: 2000
+    # max_iter: 1000
 
 tuning:
   enabled: false
