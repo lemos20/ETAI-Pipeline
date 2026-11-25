@@ -192,3 +192,13 @@ I couldn't test random_forest as a imputer because I kept getting a the same `Ea
 #### Predicting new data
 
 The command for it is `python predict.py data/compas_new_people.csv predictions.csv` and it's output is a predictions.csv with the predictions of the model supplied to the function.
+
+## Week 11 - Anomaly Detection
+
+This week I added the anomaly detetion to the pipeline, along with their own config section and ran it multiple times experimenting with the affects of each algorithm.
+
+## Conclusion for Week 11
+
+The best result I got was using no anomaly detetion at all, so we can conclude that the models benefit from the extra data even if some of it are outliers.
+
+With anomaly detetion turned on we saw that isolation forest got better results for the model compared to LOF.
